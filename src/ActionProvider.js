@@ -15,23 +15,31 @@ class ActionProvider {
   // 학교 식당
   handleRestaurantList = () => {
     axios
-    .post("/api/restaurants")
-    .then((response) => {
-    const restaurants = response.data;
-    const message = this.createChatBotMessage(
-      <>
-        <p>경기대학교의 학교 식당을 알려드릴게요🙂</p>
-        <p>{restaurants}</p>
-      </>
-    );
-
+      .post("/api/restaurants")
+      .then((response) => {
+        const restaurants = response.data;
+        console.log(restaurants);
+        const message = this.createChatBotMessage(
+          <>
+            <p>오늘 수원캠퍼스의 식단을 알려드릴게요🙂</p>
+            <ul>
+              {restaurants.map((restaurant, index) => (
+                <li key={index}>
+                  <p>{restaurant.cafeteria} ({restaurant.lunch_or_dinner})</p>
+                  <p>{restaurant.menu01}   {restaurant.menu02}  {restaurant.menu03}</p>
+                  <p>{restaurant.menu04}   {restaurant.menu05}  {restaurant.menu06}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        );
   
-    
-    this.updateChatbotState(message);
-  })
-  .catch((error) => {
-    console.error(error);
-  });}
+        this.updateChatbotState(message);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   
   // 공지사항
   handleAnnouncementList = () => {
@@ -91,6 +99,7 @@ class ActionProvider {
  handleContactList = () => {
   axios.post("/api/contacts").then((response) => {
     const contacts = response.data;
+    console.log(contacts);
     const message = this.createChatBotMessage(
       <>
       <p>경기대학교의 연락처를 알려드릴게요🙂</p>
