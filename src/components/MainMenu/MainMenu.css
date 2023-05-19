@@ -1,0 +1,23 @@
+.menu-options-container {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.menu-option-button {
+  padding: 0.7rem;
+  border-radius: 25px;
+  background: transparent;
+  margin: 3px;
+  width: 120px;
+  height: 50px;
+  border: 2px solid #aab3aa;
+  background-color: #55cc88;
+  color: #fff;
+  font-size: 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
