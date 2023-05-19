@@ -98,23 +98,29 @@ class ActionProvider {
  // 연락처
  handleContactList = () => {
   axios.post("/api/contacts").then((response) => {
-    const contacts = response.data;
-    console.log(contacts);
-    const message = this.createChatBotMessage(
-      <>
-      <p>경기대학교의 연락처를 알려드릴게요🙂</p>
-      <p>원하시는 교수님의 이름을 검색해주세요!</p>
-      <p>교수님의 전화번호와 메일을 알려드립니다!</p>
-      <p>"OOO 교수님" 이라는 키워드를 넣으면 보다 정확해요!</p>
-      <p>{contacts}</p>
-      </>
-  );
-
-  this.updateChatbotState(message);
+    const professor = response.data;
+        const message = this.createChatBotMessage(
+          <>
+            <p>경기대학교의 연락처를 알려드릴게요🙂</p>
+            {professor ? (
+              <>
+                <p>{professor.department} 소속 {professor.name} 교수님 </p>
+                <p>전화번호: {professor.phone}</p>
+                <p>이메일: {professor.email}</p>
+              </>
+            ) : (
+              <p>해당 교수님의 연락처 정보를 찾을 수 없습니다.</p>
+            )}
+          </>
+        );
+  
+        this.updateChatbotState(message);
 })
 .catch((error) => {
   console.error(error);
 });};
+
+
 
 
   updateChatbotState(message) {
