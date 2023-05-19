@@ -103,6 +103,9 @@ class ActionProvider {
     const message = this.createChatBotMessage(
       <>
       <p>경기대학교의 연락처를 알려드릴게요🙂</p>
+      <p>원하시는 교수님의 이름을 검색해주세요!</p>
+      <p>교수님의 전화번호와 메일을 알려드립니다!</p>
+      <p>"OOO 교수님" 이라는 키워드를 넣으면 보다 정확해요!</p>
       <p>{contacts}</p>
       </>
   );
