@@ -1,6 +1,4 @@
-// 실행되는 메인 코드
-
-import React,{ useState, useEffect }  from "react";
+import React, { useState, useEffect } from "react";
 import Chatbot from "react-chatbot-kit";
 import "./App.css";
 import axios from "axios";
@@ -11,24 +9,46 @@ import MessageParser from "./MessageParser";
 
 function App() {
   const [user, setUser] = useState("");
+
+  const handleUserMessage = (message) => {
+    // 사용자 메시지를 서버로 보내고 결과를 가져오는 함수
+    axios
+      .post("/api/messages", { message })
+      .then((response) => {
+        const result = response.data.result;
+        // 결과 처리를 수행하고 챗봇에게 전달
+        ActionProvider.handleServerResponse(result);
+      })
+      .catch((error) => {
+        alert("서버와의 통신에 실패했습니다.");
+        console.error(error);
+      });
+  };
+
   useEffect(() => {
-    axios.post("/api/users").then((response) => {
-      if (response.data) {
-        // console.log(response.data);
-        setUser(response.data);
-      } else {
-        alert("failed to ");
-      }
-    });
+    axios
+      .post("/api/users")
+      .then((response) => {
+        if (response.data) {
+          setUser(response.data);
+        } else {
+          alert("사용자 데이터를 가져오는 데 실패했습니다.");
+        }
+      })
+      .catch((error) => {
+        alert("서버와의 통신에 실패했습니다.");
+        console.error(error);
+      });
   }, []);
-  
+
   return (
     <div className="App">
       <header className="App-header">
-      <Chatbot
+        <Chatbot
           config={config}
           actionProvider={ActionProvider}
           messageParser={MessageParser}
+          handleUserMessage={handleUserMessage} // 사용자 메시지 핸들러 추가
         />
         {user}
       </header>

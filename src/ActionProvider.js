@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import avatarImage from "./components/img/kgu.png"
 class ActionProvider {
   constructor(createChatBotMessage, setStateFunc) {
     this.createChatBotMessage = createChatBotMessage;
@@ -15,13 +15,13 @@ class ActionProvider {
   // 학교 식당
   handleRestaurantList = () => {
     axios
-      .post("/api/restaurants")
-      .then((response) => {
-        const restaurants = response.data;
-        console.log(restaurants);
-        const message = this.createChatBotMessage(
-          <>
-            <p>오늘 수원캠퍼스의 식단을 알려드릴게요🙂</p>
+    .post("/api/restaurants")
+    .then((response) => {
+    const restaurants = response.data;
+    console.log(restaurants);
+    const message = this.createChatBotMessage(
+      <>
+      <p>오늘 수원캠퍼스의 식단을 알려드릴게요🙂</p>
             <ul>
               {restaurants.map((restaurant, index) => (
                 <li key={index}>
@@ -31,15 +31,15 @@ class ActionProvider {
                 </li>
               ))}
             </ul>
-          </>
-        );
+          </>, {widget:"restaurantslist"}
+    );
   
-        this.updateChatbotState(message);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+    
+    this.updateChatbotState(message);
+  })
+  .catch((error) => {
+    console.error(error);
+  });}
   
   // 공지사항
   handleAnnouncementList = () => {
@@ -49,7 +49,7 @@ class ActionProvider {
         <>
           <p>경기대학교의 공지사항을 알려드릴게요🙂</p>
           <p>{announcements}</p>
-        </>
+        </>, {widget:"announcementlist"}
       );
   
       this.updateChatbotState(message);
@@ -68,7 +68,7 @@ class ActionProvider {
         <>
         <p>경기대학교의 도서관 정보를 알려드릴게요🙂</p>
         <p>{libraries}</p>
-        </>
+        </>, {widget:"librarylist"}
     );
 
     this.updateChatbotState(message);
@@ -86,7 +86,7 @@ class ActionProvider {
         <>
         <p>경기대학교의 학사 일정을 알려드릴게요🙂</p>
         <p>{plans}</p>
-        </>
+        </>, {widget:"planlist"}
     );
 
     this.updateChatbotState(message);
@@ -98,29 +98,27 @@ class ActionProvider {
  // 연락처
  handleContactList = () => {
   axios.post("/api/contacts").then((response) => {
-    const professor = response.data;
+    const contact = response.data;
         const message = this.createChatBotMessage(
           <>
             <p>경기대학교의 연락처를 알려드릴게요🙂</p>
-            {professor ? (
+            {contact ? (
               <>
-                <p>{professor.department} 소속 {professor.name} 교수님 </p>
-                <p>전화번호: {professor.phone}</p>
-                <p>이메일: {professor.email}</p>
+                <p>{contact.department} 소속 {contact.name} 교수님 </p>
+                <p>전화번호: {contact.phone}</p>
+                <p>이메일: {contact.email}</p>
               </>
             ) : (
               <p>해당 교수님의 연락처 정보를 찾을 수 없습니다.</p>
             )}
-          </>
-        );
-  
-        this.updateChatbotState(message);
+          </>, {widget:"contactlist"}
+  );
+
+  this.updateChatbotState(message);
 })
 .catch((error) => {
   console.error(error);
 });};
-
-
 
 
   updateChatbotState(message) {
