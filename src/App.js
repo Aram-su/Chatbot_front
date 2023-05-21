@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Chatbot from "react-chatbot-kit";
 import "./App.css";
 import axios from "axios";
@@ -24,22 +24,6 @@ function App() {
         console.error(error);
       });
   };
-
-  useEffect(() => {
-    axios
-      .post("/api/users")
-      .then((response) => {
-        if (response.data) {
-          setUser(response.data);
-        } else {
-          alert("사용자 데이터를 가져오는 데 실패했습니다.");
-        }
-      })
-      .catch((error) => {
-        alert("서버와의 통신에 실패했습니다.");
-        console.error(error);
-      });
-  }, []);
 
   return (
     <div className="App">

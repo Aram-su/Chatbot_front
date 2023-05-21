@@ -12,16 +12,17 @@ class ActionProvider {
     this.updateChatbotState(greetingMessage);
   }
 
-  // 학교 식당
-  handleRestaurantList = () => {
-    axios
+// 학교 식당
+handleRestaurantList = () => {
+  axios
     .post("/api/restaurants")
     .then((response) => {
-    const restaurants = response.data;
-    console.log(restaurants);
-    const message = this.createChatBotMessage(
-      <>
-      <p>오늘 수원캠퍼스의 식단을 알려드릴게요🙂</p>
+      const restaurants = response.data;
+      let message;
+      if (restaurants.length > 0) {
+        message = this.createChatBotMessage(
+          <>
+            <p>오늘 수원캠퍼스의 식단을 알려드릴게요🙂</p>
             <ul>
               {restaurants.map((restaurant, index) => (
                 <li key={index}>
@@ -31,15 +32,24 @@ class ActionProvider {
                 </li>
               ))}
             </ul>
-          </>, {widget:"restaurantslist"}
-    );
-  
+          </>, { widget: "restaurantslist" }
+        );
+      } else {
+        message = this.createChatBotMessage(
+          <>
+            <p>오늘은 예정되어있는 식단이 없어요😥</p>
+            <p>다음에 다시 이용해주세요!</p>
+          </>, { widget: "restaurantslist" }
+        );
+      }
     
-    this.updateChatbotState(message);
-  })
-  .catch((error) => {
-    console.error(error);
-  });}
+      this.updateChatbotState(message);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
   
   // 공지사항
   handleAnnouncementList = () => {
@@ -61,21 +71,40 @@ class ActionProvider {
 
 
   // 도서관
-  handleLibraryList = () => {
-    axios.post("/api/libraries").then((response) => {
+handleLibraryList = () => {
+  axios.post("/api/libraries")
+    .then((response) => {
       const libraries = response.data;
-      const message = this.createChatBotMessage(
-        <>
-        <p>경기대학교의 도서관 정보를 알려드릴게요🙂</p>
-        <p>{libraries}</p>
-        </>, {widget:"librarylist"}
-    );
+      let message;
+      if ( libraries.length > 0 ){
+        message = this.createChatBotMessage(
+          <>
+            <p>현재 도서관의 좌석이용 정보를 알려드릴게요🙂</p>
+            <ul>
+              {libraries.map((seat, index) => (
+              <li key={index}>
+              <p> {seat.location} 총 좌석 : {seat.all_seats}</p>
+              <p> 사용 중 : {seat.using} / 이용가능 : {seat.available}</p>
+              </li>
+              ))}
+            </ul>
+          </>, {widget: "librarieslist"}
+        );
+      } else {
+        message = this.createChatBotMessage(
+          <>
+            <p>정보를 가져오는데 실패했어요😥</p>
+            <p>잠시 후 다시 이용해주세요</p>
+          </>, {widget: "librarieslist"}
+        );
+      }
+      this.updateChatbotState(message);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
 
-    this.updateChatbotState(message);
-  })
-  .catch((error) => {
-    console.error(error);
-  });};
 
 
   // 학사 일정
