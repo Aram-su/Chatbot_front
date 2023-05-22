@@ -123,39 +123,45 @@ handleLibraryList = () => {
 };
 
 
+//학사일정
+handlePlanList = () => {
+  axios.post("/api/plans").then((response) => {
+    const plans = response.data;
+    let message;
 
-  // 학사 일정
-  handlePlanList = () => {
-    axios.post("/api/plans").then((response) => {
-      const plans = response.data;
-      let message;
-      if (plans.length > 0) {
-        message = this.createChatBotMessage(
-          <>
-            <p>예정된 학사일정을 알려드릴게요🙂</p>
-            <ul>
-              {plans.map((plan, index) => (
-                <li key={index}>
-                  <p> {plan.title} {plan.startDay}~{plan.endDay} </p>
-                </li>
-              ))}
-            </ul>
-          </>
-        );
-      } else {
-        message = this.createChatBotMessage(
-          <>
-            <p>예정된 학사일정이 없습니다</p>
-          </>
-        );
-      }
-    
-      this.updateChatbotState(message);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    if (plans.length > 0) {
+      message = this.createChatBotMessage(
+        <>
+          <p>예정된 학사일정을 알려드릴게요🙂</p>
+          <ul>
+            {plans.map((plan, index) => (
+              <li key={index}>
+                {plan.startDay === plan.endDay ? (
+                  <p>{plan.title} {plan.startDay}</p>
+                ) : (
+                  <p>{plan.title} {plan.startDay}~{plan.endDay}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      );
+    } else {
+      message = this.createChatBotMessage(
+        <>
+          <p>예정된 학사일정이 없습니다</p>
+        </>
+      );
+    }
+  
+    this.updateChatbotState(message);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 }
+
+
  // 연락처
  handleContactList = () => {
   axios.post("/api/contacts").then((response) => {
