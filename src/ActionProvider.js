@@ -53,21 +53,38 @@ handleRestaurantList = () => {
   
   // 공지사항
   handleAnnouncementList = () => {
-    axios.post("/api/announcements").then((response) => {
+    axios.post("/api/announcements")
+    .then((response) => {
       const announcements = response.data;
-      const message = this.createChatBotMessage(
-        <>
-          <p>경기대학교의 공지사항을 알려드릴게요🙂</p>
-          <p>{announcements}</p>
-        </>, {widget:"announcementlist"}
-      );
-  
+      let message;
+      if (announcements.length > 0) {
+        message = this.createChatBotMessage(
+          <>
+            <p>경기대학교의 공지사항들이에요🙂</p>
+            <ul>
+              {announcements.map((announce, index) => (
+                <li key={index}>
+                  <p>[중요도 : {announce.importance}]  {announce.title}</p>
+                  <p>{announce.contents}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        );
+      } else {
+        message = this.createChatBotMessage(
+          <>
+            <p>특별한 공지사항이 없습니다!</p>
+          </>
+        );
+      }
+    
       this.updateChatbotState(message);
-      console.log(announcements); // UI에 받아온 데이터 출력
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error(error);
     });
-  };  
+}
 
 
   // 도서관
@@ -111,19 +128,34 @@ handleLibraryList = () => {
   handlePlanList = () => {
     axios.post("/api/plans").then((response) => {
       const plans = response.data;
-      const message = this.createChatBotMessage(
-        <>
-        <p>경기대학교의 학사 일정을 알려드릴게요🙂</p>
-        <p>{plans}</p>
-        </>, {widget:"planlist"}
-    );
-
-    this.updateChatbotState(message);
-  })
-  .catch((error) => {
-    console.error(error);
-  });};
-
+      let message;
+      if (plans.length > 0) {
+        message = this.createChatBotMessage(
+          <>
+            <p>예정된 학사일정을 알려드릴게요🙂</p>
+            <ul>
+              {plans.map((plan, index) => (
+                <li key={index}>
+                  <p> {plan.title} {plan.startDay}~{plan.endDay} </p>
+                </li>
+              ))}
+            </ul>
+          </>
+        );
+      } else {
+        message = this.createChatBotMessage(
+          <>
+            <p>예정된 학사일정이 없습니다</p>
+          </>
+        );
+      }
+    
+      this.updateChatbotState(message);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
  // 연락처
  handleContactList = () => {
   axios.post("/api/contacts").then((response) => {
