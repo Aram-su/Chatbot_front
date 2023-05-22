@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Chatbot from "react-chatbot-kit";
 import "./App.css";
 import axios from "axios";
@@ -8,7 +8,7 @@ import ActionProvider from "./ActionProvider";
 import MessageParser from "./MessageParser";
 
 function App() {
-  const [user, setUser] = useState("");
+  const [user] = useState("");
 
   const handleUserMessage = (message) => {
     // 사용자 메시지를 서버로 보내고 결과를 가져오는 함수

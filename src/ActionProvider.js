@@ -1,5 +1,4 @@
 import axios from "axios";
-import avatarImage from "./components/img/kgu.png"
 class ActionProvider {
   constructor(createChatBotMessage, setStateFunc) {
     this.createChatBotMessage = createChatBotMessage;
@@ -14,6 +13,13 @@ class ActionProvider {
 
 // 학교 식당
 handleRestaurantList = () => {
+  // 사용자 채팅 추가
+  const message = {
+    type: "user",
+    message: "오늘 식단 알려드릴게요!",
+  };
+  this.updateChatbotState(message);
+
   axios
     .post("/api/restaurants")
     .then((response) => {
@@ -53,6 +59,12 @@ handleRestaurantList = () => {
   
   // 공지사항
   handleAnnouncementList = () => {
+    const message = {
+      type: "user",
+      message: "공지사항",
+    };
+    this.updateChatbotState(message);
+    
     axios.post("/api/announcements")
     .then((response) => {
       const announcements = response.data;
@@ -89,6 +101,12 @@ handleRestaurantList = () => {
 
   // 도서관
 handleLibraryList = () => {
+  const message = {
+    type: "user",
+    message: "도서관",
+  };
+  this.updateChatbotState(message);
+  
   axios.post("/api/libraries")
     .then((response) => {
       const libraries = response.data;
@@ -125,6 +143,13 @@ handleLibraryList = () => {
 
 //학사일정
 handlePlanList = () => {
+
+  const message = {
+    type: "user",
+    message: "학사일정",
+  };
+  this.updateChatbotState(message);
+  
   axios.post("/api/plans").then((response) => {
     const plans = response.data;
     let message;
@@ -164,6 +189,12 @@ handlePlanList = () => {
 
  // 연락처
  handleContactList = () => {
+  const message = {
+    type: "user",
+    message: "연락처",
+  };
+  this.updateChatbotState(message);
+  
   axios.post("/api/contacts").then((response) => {
     const contact = response.data;
         const message = this.createChatBotMessage(

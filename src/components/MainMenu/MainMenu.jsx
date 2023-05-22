@@ -7,6 +7,7 @@ const MainMenu = (props) => {
     {
       text: "학교 식당",
       handler: props.actionProvider.handleRestaurantList,
+      
       id: 1,
     },
     { text: "공지사항", handler: props.actionProvider.handleAnnouncementList, id: 2 },

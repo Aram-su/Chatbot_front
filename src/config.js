@@ -4,7 +4,6 @@ import React from "react";
 import { createChatBotMessage } from "react-chatbot-kit";
 
 import MainMenu from "./components/MainMenu/MainMenu";
-import LinkList from "./components/LinkList/LinkList";
 import Header from "./components/Header/Header";
 import Avatar from "./components/Avatar/Avatar";
 
