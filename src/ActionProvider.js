@@ -200,46 +200,49 @@ class ActionProvider {
     .catch((error) => {
       console.error(error);
   });};
-
+  
  // 연락처
  handleContactList = () => {
   // 사용자 채팅 추가
-  const message = {
+  let message = {
     type: "user",
     message: "교내기관 전화번호 알려줘!",
   };
   this.updateChatbotState(message);
   
-  axios
-    .post("/api/contacts").then((response) => {
-      const contact = response.data;
-          const message = this.createChatBotMessage(
-            <>
-              <p>경기대학교의 연락처를 알려드릴게요🙂</p>
-              {contact ? (
-                <>
-                  <p>{contact.department} 소속 {contact.name} 교수님 </p>
-                  <p>전화번호: {contact.phone}</p>
-                  <p>이메일: {contact.email}</p>
-                </>
-              ) : (
-                <p>해당 교수님의 연락처 정보를 찾을 수 없습니다.</p>
-              )}
-            </>, {widget:"contactlist"}
-            );
+  message = this.createChatBotMessage(
+    <>
+      <p>경기대학교의 연락처를 알려드릴게요🙂</p>
+      <hr></hr>
+      <ul class="custom-list">
+        <li>   총학생회   031-249-8600, 8601   </li>
+        <li>   진성애교양대학   031-249-9526   </li>
+        <li>   인문대학   031-249-9103, 9104   /  인문대 학생회   031-249-8603   </li>
+        <li>   예술체육대학   031-249-9899, 9909, 9077   </li>
+        <li>   예술대 학생회   031-249-8602   /  체대 학생회   031-249-8609   </li>
+        <li>   사회과학대학   031-249-9361, 9315   /  사회과학대학 학생회   031-249-8604   </li>
+        <li>   소프트웨어경영대학   031-249-9212, 9402   /  소프트웨어경영대학 학생회      </li>
+        <li>   융합과학대학   031-249-9602, 9603   /  융합과학대학 학생회   031-249-8607   </li>
+        <li>   창의공과대학   031-249-9627, 9628   /  창의공과대학 학생회   031-249-8608   </li>
+        <li>   관광문화대학   02-390-5211   </li>
+        <li>   건강증진센터(보건진료소)   031-249-8941   </li>
+        <li>   생활관(경기드림타워)   031-249-9871, 9872   </li>
+        <li>   경상대 학생회   031-249-8609   </li>
+        <li>   동아리연합회   031-249-8615   </li>
+      </ul>
+    </>, {widget:"contactlist"}
+    );
 
-    this.updateChatbotState(message);
-  })
-  .catch((error) => {
-    console.error(error);
-});};
+  this.updateChatbotState(message);
+  };
 
 // 백엔드 서버로부터 받은 응답 데이터를 파라미터로 받아와서 챗봇 메시지로 생성
-handleServerResponse = (serverResponse) => {
-  console.log(serverResponse.data);
-  const professor = serverResponse.data;
-  if (professor && professor.code.startsWith("02")) {
-    const message = this.createChatBotMessage(
+handleServerResponse = (response) => {
+  
+  let message;
+  if (response && response.data.code && response.data.code.startsWith("02")) {
+    const professor = response.data;
+    message = this.createChatBotMessage(
       <>
         <p>{professor.department} 소속 {professor.name} 교수님 </p>
         <p>전화번호: {professor.phone}</p>
@@ -247,7 +250,23 @@ handleServerResponse = (serverResponse) => {
       </>
     );
     this.updateChatbotState(message);
-  } else {
+  } else if ( response.data[0].code === "050101" ) {
+    const libraries = response.data;
+    message = this.createChatBotMessage(
+        <>
+          <p>현재 도서관의 좌석이용 정보를 알려드릴게요🙂</p>
+          <ul>
+            {libraries.map((seat, index) => (
+            <li key={index}>
+            <p> {seat.location} 총 좌석 : {seat.all_seats}</p>
+            <p> 사용 중 : {seat.using} / 이용가능 : {seat.available}</p>
+            </li>
+            ))}
+          </ul>
+        </>, {widget: "librarieslist"}
+      );
+      this.updateChatbotState(message);
+    } else {
     const message = this.createChatBotMessage(
       <>
         <p>제가 알지못하는 정보에요...</p>

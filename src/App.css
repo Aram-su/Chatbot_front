@@ -216,3 +216,8 @@ height: auto;
   width: 22.5px;
   height: 22.5px;
 }
+
+.custom-list {
+  list-style-type: circle;
+  padding-inline-start: 40px;
+}
