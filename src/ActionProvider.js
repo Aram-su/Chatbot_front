@@ -236,21 +236,26 @@ class ActionProvider {
 
 // 백엔드 서버로부터 받은 응답 데이터를 파라미터로 받아와서 챗봇 메시지로 생성
 handleServerResponse = (serverResponse) => {
+  console.log(serverResponse.data);
   const professor = serverResponse.data;
-  const message = this.createChatBotMessage(
-    <>
-      {professor ? (
-                <>
-                  <p>{professor.department} 소속 {professor.name} 교수님 </p>
-                  <p>전화번호: {professor.phone}</p>
-                  <p>이메일: {professor.email}</p>
-                </>
-              ) : (
-                <p>해당 교수님의 연락처 정보를 찾을 수 없습니다.</p>
-              )}
-    </>
-  );
-  this.updateChatbotState(message);
+  if (professor && professor.code.startsWith("02")) {
+    const message = this.createChatBotMessage(
+      <>
+        <p>{professor.department} 소속 {professor.name} 교수님 </p>
+        <p>전화번호: {professor.phone}</p>
+        <p>이메일: {professor.email}</p>
+      </>
+    );
+    this.updateChatbotState(message);
+  } else {
+    const message = this.createChatBotMessage(
+      <>
+        <p>제가 알지못하는 정보에요...</p>
+        <p>다른 질문을 해주세요!</p>
+      </>
+    );
+    this.updateChatbotState(message);
+  }
 };
 
 
