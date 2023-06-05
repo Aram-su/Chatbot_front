@@ -92,7 +92,7 @@ class ActionProvider {
               {announcements.map((announce, index) => (
                 <li key={index}>
                   <p>[중요도 : {announce.importance}]  {announce.title}</p>
-                  <p>{announce.contents}</p>
+                  <p style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>{announce.contents}</p>
                 </li>
               ))}
             </ul>

@@ -76,13 +76,13 @@ height: auto;
   background-color: #000000;
   padding: 10px;
   border-radius: 5px;
-  font-size: 1.2rem;
+  font-size: 1.4rem;   
   color: #181515;
   font-weight: medium;
   position: relative;
   width: auto;
   max-width: 600px;
-  margin-left: 5px;   /* bot 아이콘과 떨어지고 메시지를 왼쪽에 띄움 */
+  margin-left: 15px;   /* bot 아이콘과 떨어지고 메시지를 왼쪽에 띄움 */
   text-align: left;
 }
 
@@ -215,6 +215,12 @@ height: auto;
   fill: #fff;
   width: 22.5px;
   height: 22.5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  /*padding-inline-start: 40px;*/
 }
 
 .custom-list {
