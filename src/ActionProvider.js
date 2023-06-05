@@ -236,46 +236,58 @@ class ActionProvider {
   this.updateChatbotState(message);
   };
 
-// 백엔드 서버로부터 받은 응답 데이터를 파라미터로 받아와서 챗봇 메시지로 생성
-handleServerResponse = (response) => {
-  
-  let message;
-  if (response && response.data.code && response.data.code.startsWith("02")) {
-    const professor = response.data;
-    message = this.createChatBotMessage(
-      <>
-        <p>{professor.department} 소속 {professor.name} 교수님 </p>
-        <p>전화번호: {professor.phone}</p>
-        <p>이메일: {professor.email}</p>
-      </>
-    );
-    this.updateChatbotState(message);
-  } else if ( response.data[0].code === "050101" ) {
-    const libraries = response.data;
-    message = this.createChatBotMessage(
+  handleServerResponse = (response) => {
+    let message;
+    console.log(response);
+    console.log(response.data);
+    if (response && response.data.code && response.data.code.startsWith("02")) {
+      const professor = response.data;
+      message = this.createChatBotMessage(
+        <>
+          <p>{professor.department} 소속 {professor.name} 교수님 </p>
+          <p>전화번호: {professor.phone}</p>
+          <p>이메일: {professor.email}</p>
+        </>
+      );
+      this.updateChatbotState(message);
+    } else if (response.data.code.startsWith("07")) {
+      const number = response.data.code.substring(2,4);
+      let imageUrl = "/img/map/suwon_"+number+".jpg"; // 이미지 URL
+      message = this.createChatBotMessage(
+        <>
+          <p style={{ fontSize: '1.2em' }}><strong>{response.data.location}</strong>의 위치를 붉은 원으로 표시해뒀어요!</p>
+          <img src={imageUrl} alt="Suwon Map" style={{ width: '100%' }} />
+          <p>{response.data.description}</p>
+        </>
+      );
+      this.updateChatbotState(message);
+    }else if (response.data[0].code === "050101") {
+      const libraries = response.data;
+      message = this.createChatBotMessage(
         <>
           <p>현재 도서관의 좌석이용 정보를 알려드릴게요🙂</p>
           <ul>
             {libraries.map((seat, index) => (
-            <li key={index}>
-            <p> {seat.location} 총 좌석 : {seat.all_seats}</p>
-            <p> 사용 중 : {seat.using} / 이용가능 : {seat.available}</p>
-            </li>
+              <li key={index}>
+                <p> {seat.location} 총 좌석 : {seat.all_seats}</p>
+                <p> 사용 중 : {seat.using} / 이용가능 : {seat.available}</p>
+              </li>
             ))}
           </ul>
         </>, {widget: "librarieslist"}
       );
       this.updateChatbotState(message);
-    } else {
-    const message = this.createChatBotMessage(
-      <>
-        <p>제가 알지못하는 정보에요...</p>
-        <p>다른 질문을 해주세요!</p>
-      </>
-    );
-    this.updateChatbotState(message);
-  }
-};
+    }  else {
+      const message = this.createChatBotMessage(
+        <>
+          <p>제가 알지못하는 정보에요...</p>
+          <p>다른 질문을 해주세요!</p>
+        </>
+      );
+      this.updateChatbotState(message);
+    }
+  };
+  
 
 
 
