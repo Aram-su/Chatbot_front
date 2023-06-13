@@ -109,9 +109,7 @@ class ActionProvider {
             </>,{widget: "announcementslist"}
           );
         }
-      
         this.updateChatbotState(message);
-        //console.log(announcements); // UI에 받아온 데이터 출력
       }).catch((error) => {
         console.error(error);
       });
@@ -248,30 +246,11 @@ class ActionProvider {
 
   handleServerResponse = (response) => {
     let message;
-    console.log(response);
-    console.log(response.data);
-    if (response && response.data.code && response.data.code.startsWith("02")) {
-      const professor = response.data;
-      message = this.createChatBotMessage(
-        <>
-          <p>{professor.department} 소속 {professor.name} 교수님 </p>
-          <p>전화번호: {professor.phone}</p>
-          <p>이메일: {professor.email}</p>
-        </>
-      );
-      this.updateChatbotState(message);
-    } else if (response.data.code.startsWith("07")) {
-      const number = response.data.code.substring(2,4);
-      let imageUrl = "/img/map/suwon_"+number+".jpg"; // 이미지 URL
-      message = this.createChatBotMessage(
-        <>
-          <p style={{ fontSize: '1.2em' }}><strong>{response.data.location}</strong>의 위치를 붉은 원으로 표시해뒀어요!</p>
-          <img src={imageUrl} alt="Suwon Map" style={{ width: '100%' }} />
-          <p>{response.data.description}</p>
-        </>
-      );
-      this.updateChatbotState(message);
-    }else if (response.data[0].code === "050101") {
+
+    const keys = Object.keys(response.data);
+    console.log(keys);
+
+    if (keys.includes('4') && response.data[0].code === "050101") {
       const libraries = response.data;
       message = this.createChatBotMessage(
         <>
@@ -287,7 +266,85 @@ class ActionProvider {
         </>, {widget: "librarieslist"}
       );
       this.updateChatbotState(message);
-    }  else {
+    } else if (keys.includes('0') && keys.length === 1 ) {
+      const announcements = response.data;
+      let message;
+
+      if (announcements.length > 0) {
+        // announce.importance를 오름차순으로 정렬
+        announcements.sort((a, b) => a.importance - b.importance);
+
+        message = this.createChatBotMessage(
+          <>
+            <p>경기대학교의 공지사항들이에요🙂</p>
+            <ul>
+              {announcements.map((announce, index) => (
+                <li key={index}>
+                  <p>[중요도 : {announce.importance}]  {announce.title}</p>
+                  <p style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>{announce.contents}</p>
+                </li>
+              ))}
+            </ul>
+          </>, {widget: "announcementslist"}
+        );
+      } else {
+        message = this.createChatBotMessage(
+          <>
+            <p>특별한 공지사항이 없습니다!</p>
+          </>,{widget: "announcementslist"}
+        );
+      }
+      this.updateChatbotState(message);
+    } else if (keys.includes('0') ) {
+      const restaurants = response.data;
+        let message;
+        if (restaurants.length > 0) {
+          message = this.createChatBotMessage(
+            <>
+              <p>오늘 수원캠퍼스의 식단을 알려드릴게요🙂</p>              
+              <ul>
+                {restaurants.map((restaurant, index) => (
+                  <li key={index}>
+                    <p>{restaurant.cafeteria} ({restaurant.lunch_or_dinner})</p>
+                    <p>{restaurant.menu01}   {restaurant.menu02}  {restaurant.menu03}</p>
+                    <p>{restaurant.menu04}   {restaurant.menu05}  {restaurant.menu06}</p>
+                    {index !== restaurants.length - 1 && <p>---------------------------------</p>}
+                  </li>
+                ))}
+              </ul>
+            </>, { widget: "restaurantslist" }
+          );
+        } else {
+          message = this.createChatBotMessage(
+            <>
+              <p>오늘은 예정되어있는 식단이 없어요😥</p>
+              <p>다음에 다시 이용해주세요!</p>
+            </>, { widget: "restaurantslist" }
+          );
+        }
+      this.updateChatbotState(message);
+    }else if ( keys.includes('department') ) {
+      const professor = response.data;
+      message = this.createChatBotMessage(
+        <>
+          <p>{professor.department} 소속 {professor.name} 교수님 </p>
+          <p>전화번호: {professor.phone}</p>
+          <p>이메일: {professor.email}</p>
+        </>
+      );
+      this.updateChatbotState(message);
+    } else if (keys.includes('location') ) {
+      const number = response.data.code.substring(2,4);
+      let imageUrl = "/img/map/suwon_"+number+".jpg"; // 이미지 URL
+      message = this.createChatBotMessage(
+        <>
+          <p style={{ fontSize: '1.2em' }}><strong>{response.data.location}</strong>의 위치를 붉은 원으로 표시해뒀어요!</p>
+          <img src={imageUrl} alt="Suwon Map" style={{ width: '100%' }} />
+          <p>{response.data.description}</p>
+        </>
+      );
+      this.updateChatbotState(message);
+      } else {
       const message = this.createChatBotMessage(
         <>
           <p>제가 알지못하는 정보에요...</p>
