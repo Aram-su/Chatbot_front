@@ -266,7 +266,41 @@ class ActionProvider {
         </>, {widget: "librarieslist"}
       );
       this.updateChatbotState(message);
-    } else if (keys.includes('0') && keys.length === 1 ) {
+    } else if (keys.includes('0') && response.data[0].startDay ) {
+      const plans = response.data;
+      let message;
+
+      if (plans.length > 0) {
+        // plan.startDay를 오름차순으로 정렬
+        plans.sort((a, b) => a.startDay.localeCompare(b.startDay));
+
+        message = this.createChatBotMessage(
+          <>
+            <p>예정된 학사일정을 알려드릴게요🙂</p>
+            <ul>
+              {plans.map((plan, index) => (
+                <li key={index}>
+                  {plan.startDay === plan.endDay ? (
+                    <p>{plan.title} {plan.startDay}</p>
+                  ) : (
+                    <p>{plan.title} {plan.startDay}~{plan.endDay}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
+        );
+      } else {
+        message = this.createChatBotMessage(
+          <>
+            <p>예정된 학사일정이 없습니다</p>
+          </>
+        );
+      }
+
+      this.updateChatbotState(message);
+
+    } else if (keys.includes('0') && response.data[0].importance ) {
       const announcements = response.data;
       let message;
 
