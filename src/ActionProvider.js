@@ -78,40 +78,45 @@ class ActionProvider {
       message: "학교 공지 알려줘!",
     };
     this.updateChatbotState(message);
-    
+      
     axios
       .post("/api/announcements")
       .then((response) => {
         const announcements = response.data;
         let message;
-      if (announcements.length > 0) {
-        message = this.createChatBotMessage(
-          <>
-            <p>경기대학교의 공지사항들이에요🙂</p>
-            <ul>
-              {announcements.map((announce, index) => (
-                <li key={index}>
-                  <p>[중요도 : {announce.importance}]  {announce.title}</p>
-                  <p style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>{announce.contents}</p>
-                </li>
-              ))}
-            </ul>
-          </>, {widget: "announcementslist"}
-        );
-      } else {
-        message = this.createChatBotMessage(
-          <>
-            <p>특별한 공지사항이 없습니다!</p>
-          </>,{widget: "announcementslist"}
-        );
-      }
-    
+  
+        if (announcements.length > 0) {
+          // announce.importance를 오름차순으로 정렬
+          announcements.sort((a, b) => a.importance - b.importance);
+  
+          message = this.createChatBotMessage(
+            <>
+              <p>경기대학교의 공지사항들이에요🙂</p>
+              <ul>
+                {announcements.map((announce, index) => (
+                  <li key={index}>
+                    <p>[중요도 : {announce.importance}]  {announce.title}</p>
+                    <p style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>{announce.contents}</p>
+                  </li>
+                ))}
+              </ul>
+            </>, {widget: "announcementslist"}
+          );
+        } else {
+          message = this.createChatBotMessage(
+            <>
+              <p>특별한 공지사항이 없습니다!</p>
+            </>,{widget: "announcementslist"}
+          );
+        }
+      
         this.updateChatbotState(message);
         //console.log(announcements); // UI에 받아온 데이터 출력
       }).catch((error) => {
         console.error(error);
       });
-  };  
+  };
+  
 
 
   // 도서관
@@ -164,13 +169,17 @@ class ActionProvider {
       message: "학사 일정 알려줘!",
     };
     this.updateChatbotState(message);
-
+  
     axios
-      .post("/api/plans").then((response) => {
+      .post("/api/plans")
+      .then((response) => {
         const plans = response.data;
         let message;
-
+  
         if (plans.length > 0) {
+          // plan.startDay를 오름차순으로 정렬
+          plans.sort((a, b) => a.startDay.localeCompare(b.startDay));
+  
           message = this.createChatBotMessage(
             <>
               <p>예정된 학사일정을 알려드릴게요🙂</p>
@@ -194,12 +203,13 @@ class ActionProvider {
             </>
           );
         }
-      
+  
         this.updateChatbotState(message);
       })
-    .catch((error) => {
-      console.error(error);
-  });};
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   
  // 연락처
  handleContactList = () => {
